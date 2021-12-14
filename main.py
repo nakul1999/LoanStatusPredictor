@@ -25,12 +25,12 @@ async def preprocess():
     xtr, xte, ytr, yte = training.preprocessing()
     return training.model_training(xtr, xte, ytr, yte)
 
-
-@app.get("/prediction")
-async def predict():
-    config = Config()
-    modelpath = config.modelSavePath
-    fileOps = FileOperation()
-    model = fileOps.loadModel("dtc_1", modelpath)
-    ypred = model.predict(yte)
-    return str(ypred)
+#
+# @app.get("/prediction")
+# async def predict():
+#     # config = Config()
+#     # modelpath = config.modelSavePath
+#     # fileOps = FileOperation()
+#     # model = fileOps.loadModel("dtc_1", modelpath)
+#     # ypred = model.predict(yte)
+#     # return str(ypred)
