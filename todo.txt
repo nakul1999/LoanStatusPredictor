@@ -1,0 +1,20 @@
+
+
+preprocessing
+
+1. drop loan_id
+2. separte numerical and categorical
+
+ cat
+ 1. check for missing vals
+ 2. if miss values then replace with most common values
+
+ num
+ 1. same as cat
+
+
+predict
+1. load model
+2. pass data as parameter
+3. predict loan status using the model
+4. display loan status.
