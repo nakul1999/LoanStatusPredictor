@@ -51,4 +51,8 @@ class ModelSelection:
 
         return best_model
 
+    def decisionTree(self,xtr,ytr):
+        dtc = DecisionTreeClassifier()
+        dtc.fit(xtr,ytr)
+        return dtc
 

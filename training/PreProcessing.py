@@ -2,25 +2,33 @@ import pandas as pd
 from sklearn.preprocessing import LabelEncoder, MinMaxScaler
 from sklearn.model_selection import train_test_split
 
+from Config import Config
+from FileOperation import FileOperation
+
 
 class PreProcessing:
     def __init__(self, datapath):
         self.data = pd.read_csv(datapath)
+        self.config = Config()
+        self.fileops = FileOperation()
         print("preprocessing.. ")
 
     def drop_LOANID(self):
-        print(self.data.columns)
         if "Loan_ID" in self.data.columns:
-            print("dropping loan_id")
-            self.data = self.data.drop(columns=['Loan_ID'], axis=1)
-            print(self.data.head(5))
+            try:
+                self.data = self.data.drop(columns=['Loan_ID'], axis=1)
+                message = "loanid dropped successfully"
+            except:
+                self.data = None
+                message = "loanid couldn't be dropped"
+            finally:
+                print(message)
+                return self.data
         else:
-            print("loanid dropped")
+            print("loanid already dropped")
+            return self.data
 
-        return self.data
-
-    def preprocessing(self):
-        print("preprocessing begins ....")
+    def cleanData(self):
         CAT_COLS = []
         NUM_COLS = []
         COLUMNS = self.data.columns
@@ -29,7 +37,6 @@ class PreProcessing:
                 CAT_COLS.append(column)
             else:
                 NUM_COLS.append(column)
-
         print(NUM_COLS)
         print(CAT_COLS)
         le = LabelEncoder()
@@ -49,11 +56,20 @@ class PreProcessing:
                 self.data[num_col].fillna(median, inplace=True)
 
             self.data[[num_col]] = pd.DataFrame(mm.fit_transform(self.data[[num_col]]))
-
         return self.data
 
-    def split_data(self,data):
-        x, y = data.iloc[:, :-1], data.iloc[:, -1]
-        return train_test_split(x,y,test_size=0.25,stratify=y)
+    def split_data(self):
+        x, y = self.data.iloc[:, :-1], self.data.iloc[:, -1]
+        xtr, xte, ytr, yte = train_test_split(x, y, test_size=0.25, stratify=y)
+        preprocessed_data = [xtr, xte, ytr, yte]
+        return self.fileops.saveModel(preprocessed_data, "preprocessed_data", self.config.preprocesseddatapath)
 
+    def preprocess(self):
+        self.data = self.drop_LOANID()
+        if (self.data is None):
+            print("problem with dropping the loadid, please retry")
+            return None
+        else:
+            self.data = self.cleanData()
 
+        return self.split_data()

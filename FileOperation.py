@@ -6,11 +6,22 @@ class FileOperation:
         pass
 
     def saveModel(self,model,modelname,savePath):
-
-        with open(savePath+"/"+modelname+'.sav','wb') as f:
-            pickle.dump(model,f)
+        modelSaveSucess = False
+        try:
+            with open(savePath+"/"+modelname+'.sav','wb') as f:
+                pickle.dump(model,f)
+            modelSaveSucess = True
+        except:
+            modelSaveSucess = False
+        finally:
+            return modelSaveSucess
 
     def loadModel(self,modelName,savePath):
 
-        with open(savePath+"/"+modelName+".sav","rb") as f:
-            return pickle.load(f)
+        try:
+            with open(savePath+"/"+modelName+".sav","rb") as f:
+                data = pickle.load(f)
+        except:
+            data = None
+        finally:
+            return data
